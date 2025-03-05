@@ -54,7 +54,18 @@ namespace Kufar {
                 images.push_back("https://yams.kufar.by/api/v1/kufar-ads/images/" + id.substr(0, 2) + "/" + id + ".jpg?rule=pictures");
             }
         }
-    
+        
+        void insertImageURL (vector<string> &images, const json &imageData) {
+            if (imageData.at("yams_storage").get<bool>()) {
+                insertImageURL(images, imageData.at("id"), true);
+                return;
+            }
+            
+            string mediaStorage = imageData.at("media_storage");
+            string path = imageData.at("path");
+            images.push_back("https://" + mediaStorage + ".kufar.by/v1/gallery/" + path);
+        }
+        
         void addURLParameter(ostringstream &ostream, const string &parameter, const string &value, const bool encodeValue = false) {
             ostream << parameter << '=' << (encodeValue ? urlEncode(value) : value) << '&';
         }
@@ -134,9 +145,7 @@ namespace Kufar {
             
             json imagesArray = ad.at("images");
             for (const auto &image : imagesArray) {
-                string imageID = image.at("id");
-                bool isYams = image.at("yams_storage");
-                insertImageURL(advert.images, imageID, isYams);
+                insertImageURL(advert.images, image);
             }
             
             adverts.push_back(advert);

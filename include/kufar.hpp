@@ -547,6 +547,7 @@ namespace Kufar {
         std::optional<int> subCategory;                 // Default: [undefined]
         std::optional<Region> region;                   // Default: [undefined]
         std::optional<std::vector<int>> areas;          // Default: [undefined]
+        std::optional<int64_t> chatId; // Новый параметр для индивидуального чата
     };
     
     std::vector<Ad> getAds(const KufarConfiguration &);

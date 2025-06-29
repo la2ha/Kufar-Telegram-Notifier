@@ -62,6 +62,7 @@ void loadJSONConfigurationData(const json &data, ProgramConfiguration &programCo
         for (const json &query : queriesData) {
             KufarConfiguration kufarConfiguration;
             
+            kufarConfiguration.chatId = getOptionalValue<int64_t>(query, "chat-id");
             kufarConfiguration.onlyTitleSearch = getOptionalValue<bool>(query, "only-title-search");
             kufarConfiguration.tag = getOptionalValue<string>(query, "tag");
             if (query.contains("price")) {
@@ -252,7 +253,8 @@ int main(int argc, char **argv) {
                         sentCount += 1;
 
                         try {
-                            sendAdvert(programConfiguration.telegramConfiguration, advert);
+                            int64_t chatIdToUse = requestConfiguration.chatId.value_or(programConfiguration.telegramConfiguration.chatID);
+                            sendAdvert(programConfiguration.telegramConfiguration, advert, chatIdToUse);
                         } catch (const exception &exc) {
                             cerr << "[ERROR (sendAdvert)]: " << exc.what() << endl;
                         }
@@ -260,19 +262,21 @@ int main(int argc, char **argv) {
                     } else {
                         //cout << "[Already was!]" << endl;
                     }
-                    usleep(300000); // 0.3s
+                    usleep(1000000); // 1s
                 }
             } catch (const exception &exc) {
                 cerr << "[ERROR (getAds)]: " << exc.what() << endl;
             }
-            DEBUG_MSG("[DEBUG]: " << "(QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s.");
+            // DEBUG_MSG("[DEBUG]: " << "(QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s.");
+            std::cout << "\033[1;33m[DEBUG]:\033[0m (QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s." << std::endl;
             sleep(programConfiguration.queryDelaySeconds);
             
             if (sentCount > 0) {
                 saveFile(programConfiguration.files.cache.path, ((json)viewedAds).dump());
             }
         }
-        DEBUG_MSG("[DEBUG]: " << "(LoopDelay) Sleeping for: " << programConfiguration.loopDelaySeconds << "s.");
+        // DEBUG_MSG("[DEBUG]: " << "(LoopDelay) Sleeping for: " << programConfiguration.loopDelaySeconds << "s.");
+        std::cout << "\033[1;33m[DEBUG]:\033[0m (LoopDelay) Sleeping for: " << programConfiguration.loopDelaySeconds << "s." << std::endl;
         sleep(programConfiguration.loopDelaySeconds);
     }
     return 0;

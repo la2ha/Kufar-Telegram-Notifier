@@ -10,6 +10,9 @@
 #include "networking.hpp"
 #include "helperfunctions.hpp"
 #include <iostream>
+#include <chrono>
+#include <iomanip> // для std::put_time
+#include <ctime>   // для std::localtime
 
 namespace Kufar {
 
@@ -116,7 +119,14 @@ namespace Kufar {
         if (configuration.sellerType.has_value()) { addURLParameterBoolean(urlStream, "cmp", int(configuration.sellerType.value())); }
         if (configuration.region.has_value()) { addURLParameter(urlStream, "rgn", int(configuration.region.value())); }
         if (configuration.areas.has_value()) { addURLParameter(urlStream, "ar", "v.or:" + joinIntVector(configuration.areas.value(), ",")); }
-            
+
+
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+        // std::cout << "\033[1;34m[Запрос]:\033[0m " << urlStream.str() << std::endl;
+        std::cout << "[" << std::put_time(std::localtime(&now_c), "%Y-%m-%d %H:%M:%S") << "] "
+          << "\033[1;34m[Запрос]:\033[0m " << urlStream.str() << std::endl;
+        
         string rawJson = getJSONFromURL(urlStream.str());
         
         json ads = json::parse(rawJson).at("ads");

@@ -14,6 +14,6 @@ namespace Telegram {
         uint64_t chatID;
     };
 
-    void sendAdvert(const TelegramConfiguration &, const Kufar::Ad &);
+    void sendAdvert(const TelegramConfiguration &, const Kufar::Ad &, int64_t chatId);
 };
 #endif /* Header_hpp */

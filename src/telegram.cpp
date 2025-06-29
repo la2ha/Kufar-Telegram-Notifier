@@ -34,7 +34,7 @@ namespace Telegram {
         return j_array.dump();
     }
 
-    void sendAdvert(const TelegramConfiguration &telegramConfiguration, const Kufar::Ad &ad) {
+    void sendAdvert(const TelegramConfiguration &telegramConfiguration, const Kufar::Ad &ad, int64_t chatId) {
         string formattedTime = ctime(&ad.date);
         formattedTime.pop_back();
         
@@ -53,10 +53,10 @@ namespace Telegram {
         
         string url = "https://api.telegram.org/bot" + telegramConfiguration.botToken;
         if (!ad.images.empty()) {
-            url += "/sendMediaGroup?chat_id=" + to_string(telegramConfiguration.chatID) + "&"
+            url += "/sendMediaGroup?chat_id=" + to_string(chatId) + "&"
                    "media=" + urlEncode(makeImageGroupJSON(ad.images, text));
         } else {
-            url += "/sendPhoto?chat_id=" + to_string(telegramConfiguration.chatID) + "&"
+            url += "/sendPhoto?chat_id=" + to_string(chatId) + "&"
                    "caption=" + urlEncode(text) + "&"
                    "photo=https://via.placeholder.com/1080";
             /*url += "/sendMessage?chat_id=" + telegramConfiguration.chatID_or_Username + "&"

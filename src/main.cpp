@@ -248,7 +248,7 @@ int main(int argc, char **argv) {
             try {
                 for (const auto &advert : getAds(requestConfiguration)) {
                     if (!vectorContains(viewedAds, advert.id)) {
-                        cout << "[New]: Adding [Title: " << advert.title << "], [ID: " << advert.id << "], [Tag: " << advert.tag << "], [Link: " << advert.link << "]" << endl;
+                        std::cout << "\033[1;32m[New]:\033[0m [Title: " << advert.title << "] " << advert.link << std::endl;
                         viewedAds.push_back(advert.id);
                         sentCount += 1;
 
@@ -262,18 +262,17 @@ int main(int argc, char **argv) {
                     } else {
                         //cout << "[Already was!]" << endl;
                     }
-                    usleep(1000000); // 1s
+                    usleep(3000000); // 1s
                 }
             } catch (const exception &exc) {
                 cerr << "[ERROR (getAds)]: " << exc.what() << endl;
             }
-            // DEBUG_MSG("[DEBUG]: " << "(QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s.");
-            std::cout << "\033[1;33m[DEBUG]:\033[0m (QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s." << std::endl;
-            sleep(programConfiguration.queryDelaySeconds);
-            
             if (sentCount > 0) {
                 saveFile(programConfiguration.files.cache.path, ((json)viewedAds).dump());
             }
+            // DEBUG_MSG("[DEBUG]: " << "(QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s.");
+            std::cout << "\033[1;33m[DEBUG]:\033[0m (QueryDelay) Sleeping for: " << programConfiguration.queryDelaySeconds << "s." << std::endl;
+            sleep(programConfiguration.queryDelaySeconds);
         }
         // DEBUG_MSG("[DEBUG]: " << "(LoopDelay) Sleeping for: " << programConfiguration.loopDelaySeconds << "s.");
         std::cout << "\033[1;33m[DEBUG]:\033[0m (LoopDelay) Sleeping for: " << programConfiguration.loopDelaySeconds << "s." << std::endl;
